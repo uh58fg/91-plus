@@ -10,17 +10,19 @@ export default defineConfig({
       userscript: {
         icon: 'https://img-blog.csdnimg.cn/20181221195058594.gif',
         namespace: '91porn',
+        author: 'uh58fg',
+        version: '1',
+        license: 'WTFPL',
+        description: '一键下载91porn视频，跳过观看广告极速播放,去除页面广告',
         match: [
-          // 'v2ex.com',
           '*91porn.com/view_video.php?*',
         ],
         require: [
           'https://cdn.bootcdn.net/ajax/libs/hls.js/8.0.0-beta.3/hls.min.js',
           'https://cdn.bootcdn.net/ajax/libs/dplayer/1.26.0/DPlayer.min.js',
-          'https://raw.githubusercontent.com/uh58fg/91-plus/master/lib/mux-mp4.js',
-          'https://raw.githubusercontent.com/uh58fg/91-plus/master/lib/aes-decryptor-min.js',
-          'https://raw.githubusercontent.com/uh58fg/91-plus/master/lib/stream-saver.js',
-          // 'https://cdn.bootcdn.net/ajax/libs/mux.js/6.3.0/mux-mp4.min.js',
+          'https://greasyfork.org/scripts/466106-91-plus-mux-mp4/code/91-plus-mux-mp4.js?version=1189391',
+          // 'https://raw.githubusercontent.com/uh58fg/91-plus/master/lib/mux-mp4.js',
+          // 'https://raw.githubusercontent.com/uh58fg/91-plus/master/lib/stream-saver.js',
         ]
       },
       build: {
