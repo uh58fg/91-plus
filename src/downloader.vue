@@ -10,11 +10,11 @@
           <input id="a1" type="checkbox" v-model="conf.autoDownload">
         </div>
         <div class="option">
-          <label for="a2">自动保存</label>
+          <label for="a2">下载完成后自动保存</label>
           <input id="a2" type="checkbox" v-model="conf.autoSave">
         </div>
         <div class="option">
-          <label for="a3">下载完自动关闭</label>
+          <label for="a3">保存后自动关闭</label>
           <input id="a3" type="checkbox" v-model="conf.autoClose">
         </div>
       </div>
