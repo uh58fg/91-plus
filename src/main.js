@@ -2,17 +2,6 @@ import {createApp} from 'vue';
 import App from './App.vue';
 import {monkeyWindow} from "$";
 
-function removePadding(buffer) {
-  const outputBytes = buffer.byteLength;
-  const paddingBytes = outputBytes && (new DataView(buffer)).getUint8(outputBytes - 1);
-  if (paddingBytes) {
-    return buffer.slice(0, outputBytes - paddingBytes);
-  } else {
-    return buffer;
-  }
-}
-
-
 window.info = {
   author: {
     name: '',
@@ -56,7 +45,6 @@ function init() {
   console.log(window.info)
 }
 
-console.log(monkeyWindow)
 try {
   init()
 

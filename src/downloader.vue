@@ -378,9 +378,9 @@ export default {
   data() {
     return {
       conf: {
-        autoDownload: false,
+        autoDownload: true,
+        autoSave: true,
         autoClose: false,
-        autoSave: false,
       },
       show: false,
       tips: 'm3u8 视频在线提取工具', // 顶部提示

@@ -48,7 +48,7 @@ function checkOriginVideoIsPlay() {
 
 function initComments() {
   $.ajax({
-    url: `https://91porn.com/show_comments2.php?VID=${data.info.video.vid}&start=1&comment_per_page=20`,
+    url: `http://91porn.com/show_comments2.php?VID=${data.info.video.vid}&start=1&comment_per_page=30`,
     success(r) {
       let h = $(r)
       h.each(function () {
@@ -140,10 +140,7 @@ function goHome() {
       <a v-if="data.info.author.name" :href="data.info.author.url" class="author" target="_blank">
         作者： {{ data.info.author.name }}
       </a>
-      <downloader
-          :title="data.info.video.name"
-          :url="data.info.video.url"
-      />
+      <downloader :title="data.info.video.name" :url="data.info.video.url"/>
     </div>
     <div class="right">
       <div class="big-title">
