@@ -48,7 +48,7 @@ function checkOriginVideoIsPlay() {
 
 function initComments() {
   $.ajax({
-    url: `http://91porn.com/show_comments2.php?VID=${data.info.video.vid}&start=1&comment_per_page=30`,
+    url: `${location.origin}/show_comments2.php?VID=${data.info.video.vid}&start=1&comment_per_page=30`,
     success(r) {
       let h = $(r)
       h.each(function () {
