@@ -23,8 +23,7 @@
     <div class="row2" v-if="!show">
       <div class="big-btn"
            v-if="finishNum === rangeDownload.targetSegment
-         && rangeDownload.targetSegment > 0
-         && !conf.autoSave"
+         && rangeDownload.targetSegment > 0"
            @click="forceDownload">
         <span>保存</span>
       </div>
@@ -411,7 +410,6 @@ export default {
         iv: '', // 偏移值
         key: '', // 秘钥
         decryptor: null, // 解码器对象
-
         stringToBuffer: function (str) {
           return new TextEncoder().encode(str)
         },
@@ -745,6 +743,7 @@ export default {
     },
     // 下载整合后的TS文件
     downloadFile(fileDataList, fileName, forceSave = false) {
+      this.getConf()
       setTimeout(() => {
         document.title = "下载完成 " + this.title
       }, 1000)
@@ -768,7 +767,6 @@ export default {
       a.remove()
 
       setTimeout(() => {
-        this.getConf()
         if (this.conf.autoClose) {
           window.opener = null;
           window.open('', '_self', '');
