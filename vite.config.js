@@ -11,9 +11,9 @@ export default defineConfig({
         icon: 'https://img-blog.csdnimg.cn/20181221195058594.gif',
         namespace: '91porn',
         author: 'uh58fg',
-        version: '4',
+        version: '5',
         license: 'WTFPL',
-        description: '一键下载91porn视频，跳过观看广告极速播放,去除页面广告',
+        description: '多线程下载91porn视频，跳过广告，清除页面广告。',
         match: [
           '*91porn.com/view_video.php?*',
         ],
