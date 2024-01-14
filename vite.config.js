@@ -9,13 +9,14 @@ export default defineConfig({
       entry: 'src/main.js',
       userscript: {
         icon: 'https://img-blog.csdnimg.cn/20181221195058594.gif',
-        namespace: '91porn',
+        namespace: 'jiuyi',
         author: 'uh58fg',
-        version: '5',
+        version: '17',
         license: 'WTFPL',
         description: '多线程下载91porn视频，跳过广告，清除页面广告。',
         match: [
           '*91porn.com/view_video.php?*',
+          '*91porn.com/index.php',
         ],
         require: [
           'https://cdn.bootcdn.net/ajax/libs/hls.js/8.0.0-beta.3/hls.min.js',

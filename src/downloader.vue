@@ -433,6 +433,7 @@ export default {
     }
   },
   created() {
+    console.log('m3u8-downloader.vue')
     this.getConf()
     if (this.conf.autoDownload) {
       this.getMP4()
@@ -498,8 +499,8 @@ export default {
         return
       }
       if (this.url.toLowerCase().indexOf('m3u8') === -1) {
-        alert('链接有误，请重新输入')
-        return
+        // alert('链接有误，请重新输入')
+        // return
       }
       if (this.downloading) {
         alert('资源下载中，请稍后')

@@ -2,6 +2,7 @@
 import {onMounted, reactive, ref, watch} from "vue";
 import Downloader from "./downloader.vue";
 import {monkeyWindow} from "$";
+import Mp4Downloader from "./mp4-downloader.vue";
 
 const dpRef = ref(null)
 const dp = ref(null)
@@ -17,7 +18,7 @@ watch(() => data.show, (n, o) => {
     pauseOriginVideo()
     document.body.style.overflow = 'hidden'
   } else {
-    dp.value.pause()
+    dp.value?.pause()
     document.body.style.overflow = 'unset'
   }
 }, {immediate: true})
@@ -80,20 +81,24 @@ function initComments() {
 
 function initVideo() {
   if (!dpRef.value) return
+
+  let config = {
+    url: data.info.video.url,
+    type: data.info.video.type,
+  }
+  if (config.type === 'customHls') {
+    config.customType = {
+      customHls: function (video, player) {
+        const hls = new monkeyWindow.Hls()
+        hls.loadSource(video.src)
+        hls.attachMedia(video)
+      }
+    }
+  }
   dp.value = new monkeyWindow.DPlayer({
     container: dpRef.value,
     autoplay: true,
-    video: {
-      url: data.info.video.url,
-      type: 'customHls',
-      customType: {
-        customHls: function (video, player) {
-          const hls = new monkeyWindow.Hls()
-          hls.loadSource(video.src)
-          hls.attachMedia(video)
-        }
-      }
-    },
+    video: config
   });
   dp.value.seek(10);
 }
@@ -140,7 +145,8 @@ function goHome() {
       <a v-if="data.info.author.name" :href="data.info.author.url" class="author" target="_blank">
         作者： {{ data.info.author.name }}
       </a>
-      <downloader :title="data.info.video.name" :url="data.info.video.url"/>
+      <Mp4Downloader v-if="data.info.video.type === 'auto'" :name="data.info.video.name" :url="data.info.video.url"/>
+      <downloader v-else :title="data.info.video.name" :url="data.info.video.url"/>
     </div>
     <div class="right">
       <div class="big-title">

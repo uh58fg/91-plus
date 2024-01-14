@@ -41,20 +41,42 @@ function init() {
       vid: $('#favorite #VID').text(),
       date: $('.title-yakov')[0].innerText
     }
+
+    if (window.info.video.url.toLowerCase().indexOf('m3u8') === -1) {
+      window.info.video.type = 'auto'
+    } else {
+      window.info.video.type = 'customHls'
+    }
+
+    createApp(App).mount(
+      (() => {
+        const app = document.createElement('div');
+        document.body.append(app);
+        return app;
+      })(),
+    );
   }
   console.log(window.info)
 }
 
 try {
-  init()
+  let style2 = `
+  .ad_img{display:none;}
+  `
+  let addStyle2 = document.createElement("style");
+  // @ts-ignore
+  addStyle2.rel = "stylesheet";
+  addStyle2.type = "text/css";
+  addStyle2.innerHTML = style2
+  window.document.head.append(addStyle2)
+  $('iframe').hide()
 
-  createApp(App).mount(
-    (() => {
-      const app = document.createElement('div');
-      document.body.append(app);
-      return app;
-    })(),
-  );
+  let l = window.location
+  if (l.pathname === '/index.php') {
+
+  } else if (l.pathname === '/view_video.php') {
+    init()
+  }
 } catch (e) {
   console.log('init报错了', e)
 }
