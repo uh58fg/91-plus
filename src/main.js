@@ -32,8 +32,7 @@ function init() {
   }
 
   if (!videoWrapper[0]) {
-    // document.title = '作为游客，你每天只可观看15个视频'
-    return
+    document.title = '作为游客，你每天只可观看15个视频'
   } else {
     window.info.video = {
       name: document.title.replace('Chinese homemade video', ''),
@@ -68,7 +67,7 @@ try {
   addStyle2.rel = "stylesheet";
   addStyle2.type = "text/css";
   addStyle2.innerHTML = style2
-  window.document.head.append(addStyle2)
+  document.head.append(addStyle2)
   $('iframe').hide()
 
   let l = window.location

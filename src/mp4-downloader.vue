@@ -1,5 +1,6 @@
 <script>
-let videoBlob
+let videoBlobUrl
+
 export default {
   name: "mp4-downloader",
   props: {
@@ -13,6 +14,7 @@ export default {
         autoSave: true,
         autoClose: false,
       },
+      retryCount: 0,
       progress: 0,
       show: false,
       tips: 'm3u8 视频在线提取工具', // 顶部提示
@@ -20,7 +22,6 @@ export default {
       isGetMP4: false, // 是否转码为 MP4 下载
     }
   },
-
   watch: {
     conf: {
       handler(n, o) {
@@ -38,6 +39,11 @@ export default {
     if (this.conf.autoDownload) {
       this.download()
     }
+    window.onbeforeunload = () => {
+      if (videoBlobUrl) {
+        URL.revokeObjectURL(videoBlobUrl)
+      }
+    }
   },
   methods: {
     getConf() {
@@ -50,37 +56,59 @@ export default {
       }
     },
     download() {
+      let u = new URLSearchParams(location.search)
+      let retryCount = u.get('retryCount') || 0
+      if (retryCount) {
+        retryCount = Number(retryCount)
+        if (retryCount >= 3) {
+          return document.title = '下载失败！'
+        }
+      }
+
       let xhr = new XMLHttpRequest();
       xhr.open('GET', this.url, true);
       xhr.responseType = 'blob';
-
       xhr.onprogress = event => {
         this.progress = Number(Number(event.loaded / event.total).toFixed(2)) * 100
-        console.log('进度', this.progress)
+        // console.log('进度', this.progress)
       };
-      xhr.onload = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          videoBlob = xhr.response;
-          this.progress = 100
-          this.getConf()
-          if (this.conf.autoSave) {
-            this.save()
+      xhr.onreadystatechange = () => {
+        // console.log('onreadystatechange', xhr.readyState, xhr.status)
+        if (xhr.readyState === 4) {
+          let status = xhr.status;
+          if (status >= 200 && status < 300) {
+            videoBlobUrl = window.URL.createObjectURL(xhr.response);
+            this.progress = 100
+            this.getConf()
+            this.$emit('end', videoBlobUrl)
+            if (this.conf.autoSave) {
+              this.save()
+            }
+          } else {
+            retryCount++
+            document.title = `下载失败${retryCount}次！`
+            setTimeout(() => {
+              u.set('retryCount', retryCount)
+              location.search = u.toString()
+            }, 3000)
+            console.log('请求失败了')
           }
         }
-      };
+      }
       xhr.send();
     },
     save() {
-      if (!videoBlob) return
+      if (!videoBlobUrl) {
+        videoBlobUrl = window.URL.createObjectURL(xhr.response);
+      }
       this.getConf()
       let a = document.createElement('a');
       a.style.display = 'none';
       document.body.appendChild(a);
-      let url = window.URL.createObjectURL(videoBlob);
-      a.href = url;
+      a.href = videoBlobUrl;
       a.download = this.name + '.mp4';
       a.click();
-      window.URL.revokeObjectURL(url);
+      URL.revokeObjectURL(videoBlobUrl);
       a.remove()
       setTimeout(() => {
         if (this.conf.autoClose) {

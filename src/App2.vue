@@ -6,7 +6,6 @@ import Mp4Downloader from "./mp4-downloader.vue";
 
 const dpRef = ref(null)
 const dp = ref(null)
-const h5Video = ref(null)
 const recommendRef = ref(null)
 const data = reactive({
   comments: [],
@@ -55,9 +54,7 @@ function initComments() {
       h.each(function () {
         if (this.tagName === 'TABLE') {
           // console.log(this)
-          let a = $(this).find('a:first');
-          let name = a.text().trim()
-          let url = a[0].href + '&type=public'
+          let name = $(this).find('a:first').remove().text().trim()
           let time = $(this).find('.comment-info').contents()[4]
           let body = $(this).find('.comment-body')
           let quote = body.find('.comment_quote').text().replaceAll(' ', '').replaceAll('\n', '')
@@ -72,8 +69,7 @@ function initComments() {
               name,
               time: $(time).text(),
               quote,
-              replay,
-              url
+              replay
             })
           }
         }
@@ -83,13 +79,13 @@ function initComments() {
 }
 
 function initVideo() {
+  // if (!dpRef.value) return
 
   let config = {
     url: data.info.video.url,
     type: data.info.video.type,
   }
   if (config.type === 'customHls') {
-    if (!dpRef.value) return
     config.customType = {
       customHls: function (video, player) {
         const hls = new monkeyWindow.Hls()
@@ -97,29 +93,17 @@ function initVideo() {
         hls.attachMedia(video)
       }
     }
-    dp.value = new monkeyWindow.DPlayer({
-      container: dpRef.value,
-      autoplay: true,
-      video: config
-    });
-    dp.value.seek(10);
-  } else {
-    if (h5Video.value) {
-      h5Video.value.currentTime = 10
-    }
   }
+  dp.value = new monkeyWindow.DPlayer({
+    container: dpRef.value,
+    autoplay: true,
+    video: config
+  });
+  dp.value.seek(10);
 }
 
 function goHome() {
   location.href = 'https://91porn.com/index.php'
-}
-
-function downloadEnd(blobUrl) {
-  if (h5Video.value) {
-    let old = h5Video.value.currentTime
-    h5Video.value.src = blobUrl
-    h5Video.value.currentTime = old
-  }
 }
 </script>
 
@@ -139,7 +123,7 @@ function downloadEnd(blobUrl) {
       <div class="comments">
         <div class="item" v-for="item in data.comments">
           <div class="title">
-            <a :href="item.url" target="_blank"> {{ item.name }}</a>
+            <span> {{ item.name }}</span>
             <span> {{ item.time }}</span>
           </div>
           <div class="quote" v-if="item.quote">
@@ -151,15 +135,9 @@ function downloadEnd(blobUrl) {
         </div>
       </div>
     </div>
-    <div class="video-wrapper">
-      <div id="dplayer" ref="dpRef"></div>
-      <video
-          ref="h5Video"
-          :src="data.info.video.url"
-          controls
-          preload
-          autoplay
-          class="my-video"></video>
+    <div class="video">
+      <!--      <div id="dplayer" ref="dpRef" style="height: 70vh;"></div>-->
+      <video :src="data.info.video.url"></video>
       <div class="title">{{ data.info.video.name }}</div>
       <div class="author" target="_blank">
         添加时间： {{ data.info.video.date }}
@@ -167,12 +145,7 @@ function downloadEnd(blobUrl) {
       <a v-if="data.info.author.name" :href="data.info.author.url" class="author" target="_blank">
         作者： {{ data.info.author.name }}
       </a>
-      <Mp4Downloader
-          v-if="data.info.video.type === 'auto'"
-          :name="data.info.video.name"
-          :url="data.info.video.url"
-          @end="downloadEnd"
-      />
+      <Mp4Downloader v-if="data.info.video.type === 'auto'" :name="data.info.video.name" :url="data.info.video.url"/>
       <downloader v-else :title="data.info.video.name" :url="data.info.video.url"/>
     </div>
     <div class="right">
@@ -278,16 +251,17 @@ function downloadEnd(blobUrl) {
     letter-spacing: 2px;
     background: rgba(33, 33, 33, 1);
     font-size: 2rem;
+
+
   }
 
-  .video-wrapper {
-    width: 60vw;
+  .video {
+    width: 60%;
     overflow: auto;
     padding-bottom: 2rem;
 
-    .my-video, #dplayer {
+    #dplayer {
       width: 100%;
-      max-height: 70vh;
     }
 
     .title {
@@ -315,7 +289,7 @@ function downloadEnd(blobUrl) {
     border-radius: .5rem;
     overflow: hidden;
     position: relative;
-    font-size: 1.8rem;
+
 
     .comments {
       color: white;
@@ -330,7 +304,7 @@ function downloadEnd(blobUrl) {
         text-align: start;
 
         .title {
-          font-size: 1.4rem;
+          font-size: 1rem;
 
           span {
             margin-right: 10px;
@@ -343,6 +317,10 @@ function downloadEnd(blobUrl) {
           padding: .5rem;
           padding-left: 1rem;
           border: 1px dashed gray;
+        }
+
+        .replay {
+          margin-top: 1rem;
         }
       }
     }
